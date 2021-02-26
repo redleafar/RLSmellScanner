@@ -4,27 +4,17 @@ import model.ScanResult;
 
 public class LongParamListScanResult implements ScanResult {
 
-    private int numberOfMethods;
-    private int longMethodsDetected;
+    private int longParamListDetected;
 
-    public LongParamListScanResult(int numberOfMethods, int longMethodsDetected) {
-        this.numberOfMethods = numberOfMethods;
-        this.longMethodsDetected = longMethodsDetected;
+    public LongParamListScanResult(int longParamListDetected) {
+        this.longParamListDetected = longParamListDetected;
     }
 
-    public int getNumberOfMethods() {
-        return numberOfMethods;
+    public int getLongParamListDetected() {
+        return longParamListDetected;
     }
 
-    public void setNumberOfMethods(int numberOfMethods) {
-        this.numberOfMethods = numberOfMethods;
-    }
-
-    public int getLongMethodsDetected() {
-        return longMethodsDetected;
-    }
-
-    public void setLongMethodsDetected(int longMethodsDetected) {
-        this.longMethodsDetected = longMethodsDetected;
+    public void setLongParamListDetected(int longParamListDetected) {
+        this.longParamListDetected = longParamListDetected;
     }
 }

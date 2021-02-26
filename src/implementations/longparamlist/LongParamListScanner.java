@@ -5,65 +5,53 @@ import scanner.MetricScanner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LongParamListScanner implements MetricScanner {
 
-    public static int LongParamListLimit = 7;
+    public static int LongParamListLimit = 5;
 
     @Override
     public ScanResult scan(BufferedReader reader) throws IOException {
         int lineCount = 0;
         int spaceCount = 0;
-        int numberOfMethods = 0;
-        int longMethodsDetected = 0;
+        int longParamsDetected = 0;
         String line = reader.readLine();
 
         while (line != null) {
-            if (isMethodStart(line)) {
-                if (lineCount > LongParamListLimit) {
-                    longMethodsDetected++;
-                }
-
-                spaceCount = 0;
-                lineCount = 0;
-                numberOfMethods++;
-            } else if(numberOfMethods > 0 && isMethodContent(line)) {
-                lineCount += spaceCount + 1;
-                spaceCount = 0;
-            } else {
-                spaceCount++;
+            if (isMethodOrClassStart(line) && getParameters(line) > LongParamListLimit) {
+                longParamsDetected++;
             }
-
             line = reader.readLine();
         }
 
-        if (lineCount > LongParamListLimit) {
-            longMethodsDetected++;
-        }
-
-        return new LongParamListScanResult(numberOfMethods, longMethodsDetected);
+        return new LongParamListScanResult(longParamsDetected);
     }
 
     @Override
     public void showResult(ScanResult scanResult) {
-        int methodsDetected = ((LongParamListScanResult)scanResult).getNumberOfMethods();
-        int longMethodsDetected = ((LongParamListScanResult)scanResult).getLongMethodsDetected();
-        System.out.println("Long Method Scanner result: ");
-        System.out.println("Long methods detected: " + longMethodsDetected);
-        System.out.println("Number of methods: " + methodsDetected);
+        int longParamListDetected = ((LongParamListScanResult)scanResult).getLongParamListDetected();
+        System.out.println("Long Parameter Scanner result: ");
+        System.out.println("Long Parameter classes and methods detected: " + longParamListDetected);
     }
 
-    private static boolean isMethodStart(String line) {
+    private boolean isMethodOrClassStart(String line) {
         String newLine = line.trim();
         String[] words = newLine.split(" ");
-        return words[0].equals("def");
+        return words[0].equals("def") || words[0].equals("class");
     }
 
-    private static boolean isMethodContent(String line) {
-        String newLine = line.trim();
-        String[] words = newLine.split(" ");
-        String firstElement = words[0];
+    private int getParameters(String text) {
+        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(text);
+        String parameters = "";
+        String[] parametersArray;
 
-        return words.length > 1 || firstElement.length() > 0;
+        while(m.find()) {
+            parameters = m.group(1);
+        }
+
+        parametersArray = parameters.split(",");
+        return parametersArray.length;
     }
 }

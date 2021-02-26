@@ -137,7 +137,8 @@ class Maleability:
                 parser.error('--find_key requires an input image and a ciphered image')
 
 
-
+    def test(a, b, c, d, e, f):
+        print("test")
 
 class Maleability2:
     def __init__()
