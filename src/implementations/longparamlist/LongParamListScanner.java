@@ -14,19 +14,60 @@ public class LongParamListScanner implements MetricScanner {
 
     @Override
     public ScanResult scan(BufferedReader reader) throws IOException {
-        int lineCount = 0;
-        int spaceCount = 0;
         int longParamsDetected = 0;
+        boolean countMultiLineParams = false;
+        StringBuilder multiLineParamsStringBuilder = new StringBuilder();
+        String multiLineParamsString = "";
         String line = reader.readLine();
 
         while (line != null) {
-            if (isMethodOrClassStart(line) && getParameters(line) > LongParamListLimit) {
+            if (isNotMethodOrClassStart(line) && !countMultiLineParams) {
+                line = reader.readLine();
+                continue;
+            } else if (isNotMethodOrClassStart(line) && countMultiLineParams && !isParamsListEndLine(line)) {
+                multiLineParamsStringBuilder.append(line.trim());
+                line = reader.readLine();
+                continue;
+            } else if (isNotMethodOrClassStart(line) && countMultiLineParams && isParamsListEndLine(line)) {
+                multiLineParamsStringBuilder.append(line.trim());
+                multiLineParamsString = multiLineParamsStringBuilder.toString();
+
+                if (getParameters(multiLineParamsString) > LongParamListLimit) {
+                    longParamsDetected++;
+                }
+
+                countMultiLineParams = false;
+                multiLineParamsStringBuilder.setLength(0);
+                line = reader.readLine();
+                continue;
+            }
+
+            if (!isParamsListEndLine(line)) {
+                countMultiLineParams = true;
+                multiLineParamsStringBuilder.append(line.trim());
+                line = reader.readLine();
+                continue;
+            }
+
+            if (getParameters(line) > LongParamListLimit) {
                 longParamsDetected++;
             }
+
             line = reader.readLine();
         }
 
         return new LongParamListScanResult(longParamsDetected);
+    }
+
+    private boolean isParamsListEndLine(String line) {
+        String newLine = line.trim();
+        char lastChar = ' ';
+
+        if (newLine.length() > 0) {
+            lastChar = newLine.charAt(newLine.length() - 1);
+        }
+
+        return lastChar == ':';
     }
 
     @Override
@@ -36,10 +77,10 @@ public class LongParamListScanner implements MetricScanner {
         System.out.println("Long Parameter classes and methods detected: " + longParamListDetected);
     }
 
-    private boolean isMethodOrClassStart(String line) {
+    private boolean isNotMethodOrClassStart(String line) {
         String newLine = line.trim();
         String[] words = newLine.split(" ");
-        return words[0].equals("def") || words[0].equals("class");
+        return !words[0].equals("def") && !words[0].equals("class");
     }
 
     private int getParameters(String text) {

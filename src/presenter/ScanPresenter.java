@@ -1,6 +1,7 @@
 package presenter;
 
 import implementations.largeclass.LargeClassScanner;
+import implementations.longmessagechain.LongMessageChainScanner;
 import implementations.longmethod.LongMethodScanner;
 import implementations.longparamlist.LongParamListScanner;
 import model.ScanResult;
@@ -42,10 +43,12 @@ public class ScanPresenter {
         LongMethodScanner longMethodScanner = new LongMethodScanner();
         LargeClassScanner largeClassScanner = new LargeClassScanner();
         LongParamListScanner longParamListScanner = new LongParamListScanner();
+        LongMessageChainScanner longMessageChainScanner = new LongMessageChainScanner();
 
         scannerArrayList.add(longMethodScanner);
         scannerArrayList.add(largeClassScanner);
         scannerArrayList.add(longParamListScanner);
+        scannerArrayList.add(longMessageChainScanner);
 
         try {
             for (MetricScanner scanner:scannerArrayList) {
