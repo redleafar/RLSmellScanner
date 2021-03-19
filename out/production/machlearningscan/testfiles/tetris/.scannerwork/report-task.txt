@@ -1,6 +1,0 @@
-projectKey=Tetris-deep-Q-learning-pytorch
-serverUrl=http://localhost:9000
-serverVersion=8.4.2.36762
-dashboardUrl=http://localhost:9000/dashboard?id=Tetris-deep-Q-learning-pytorch
-ceTaskId=AXUPEoGq1Wu7tYq0VVUq
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AXUPEoGq1Wu7tYq0VVUq

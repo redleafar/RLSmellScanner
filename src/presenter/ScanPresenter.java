@@ -1,14 +1,16 @@
 package presenter;
 
 import implementations.largeclass.LargeClassScanner;
+import implementations.longelementchain.LongElementChainScanner;
+import implementations.longlambdafunction.LongLambdaFunctionScanner;
 import implementations.longmessagechain.LongMessageChainScanner;
 import implementations.longmethod.LongMethodScanner;
 import implementations.longparamlist.LongParamListScanner;
 import implementations.longscopechaining.LongScopeChainingScanner;
+import implementations.longternary.LongTernaryOperatorScanner;
 import model.ScanResult;
 import scanner.MetricScanner;
 import view.ScanView;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,7 +25,7 @@ import java.util.stream.Stream;
 public class ScanPresenter {
     public static void main(String[] args) {
 
-        try (Stream<Path> walk = Files.walk(Paths.get("src/testfiles/tetris"))) {
+        try (Stream<Path> walk = Files.walk(Paths.get("src/testfiles"))) {
 
             List<String> result = walk.filter(Files::isRegularFile)
                     .map(Path::toString).collect(Collectors.toList());
@@ -46,12 +48,18 @@ public class ScanPresenter {
         LongParamListScanner longParamListScanner = new LongParamListScanner();
         LongMessageChainScanner longMessageChainScanner = new LongMessageChainScanner();
         LongScopeChainingScanner longScopeChainingScanner = new LongScopeChainingScanner();
+        LongTernaryOperatorScanner longTernaryOperatorScanner = new LongTernaryOperatorScanner();
+        LongElementChainScanner longElementChainScanner = new LongElementChainScanner();
+        LongLambdaFunctionScanner longLambdaFunctionScanner = new LongLambdaFunctionScanner();
 
         scannerArrayList.add(longMethodScanner);
         scannerArrayList.add(largeClassScanner);
         scannerArrayList.add(longParamListScanner);
         scannerArrayList.add(longMessageChainScanner);
         scannerArrayList.add(longScopeChainingScanner);
+        scannerArrayList.add(longTernaryOperatorScanner);
+        scannerArrayList.add(longElementChainScanner);
+        scannerArrayList.add(longLambdaFunctionScanner);
 
         try {
             for (MetricScanner scanner:scannerArrayList) {

@@ -37,9 +37,9 @@ public class LongScopeChainingScanner implements MetricScanner {
 
     @Override
     public void showResult(ScanResult scanResult) {
-        int longParamListDetected = ((LongScopeChainingScanResult)scanResult).getLongScopeChainingsDetected();
+        int longScopeChainingsDetected = ((LongScopeChainingScanResult)scanResult).getLongScopeChainingsDetected();
         System.out.println("Long Scope Chaining Scanner result: ");
-        System.out.println("Long Scope Chainings detected: " + longParamListDetected);
+        System.out.println("Long Scope Chainings detected: " + longScopeChainingsDetected);
     }
 
     private int getBeginOfLineSpaces(String line) {

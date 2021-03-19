@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class LongMethodScanner implements MetricScanner {
 
-    public static int LongMethodLinesLimit = 20;
+    public static int LongMethodLinesLimit = 100;
 
     @Override
     public ScanResult scan(BufferedReader reader) throws IOException {

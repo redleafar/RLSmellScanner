@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class LongMessageChainScanner implements MetricScanner {
 
-    public static int LongMessageChainLimit = 5;
+    public static int LongMessageChainLimit = 4;
 
     @Override
     public ScanResult scan(BufferedReader reader) throws IOException {

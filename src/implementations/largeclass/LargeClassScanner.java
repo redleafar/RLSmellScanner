@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class LargeClassScanner implements MetricScanner {
 
-    public static int LargeClassLinesLimit = 30;
+    public static int LargeClassLinesLimit = 200;
 
     @Override
     public ScanResult scan(BufferedReader reader) throws IOException {

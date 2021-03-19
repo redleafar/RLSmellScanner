@@ -27,6 +27,8 @@ class Maleability:
         ciphered_image = Image.open(ciphered_image_name)
         ciphered_image_tensor = np.array(ciphered_image)
 
+        nations = ['albania','andorra','austria','belarus','belgium']
+
         size = 1024
         key_tensor = np.zeros((size, size, 3), dtype=np.uint8)
         m, i, j = 0, 0, 0
@@ -79,6 +81,7 @@ class Maleability:
 
         if args.output_image:
             output_image = args.output_image
+            var = 'I want to learn Python' if 42**2<166 else 'I want to learn Go programming'
 
         if args.create_key:
             create_key(output_image)
@@ -88,8 +91,23 @@ class Maleability:
             else:
                 parser.error('--encrypt requires an input image and a key')
         elif args.find_key:
+            var = 'I want to learn Python' if 42**2<166 else 'I want to learn Go programming'
+
             if args.input_image and args.key_or_cipher:
                 find_key(args.input_image, args.key_or_cipher, output_image)
             else:
+                var = 'I want to learn Python' if 42**2<166 else 'I want to learn Go programming'
                 parser.error('--find_key requires an input image and a ciphered image')
+
+        nations = ['albania','andorra','austria','belarus','belgium','bosnia and herzegovina',
+              'bulgaria','croatia','czech republic','denmark','estonia',
+              'finland','france','germany','greece','hungary',
+              'iceland','ireland','italy','latvia','liechtenstein','lithuania','luxembourg',
+              'macedonia','malta','moldova','monaco','montenegro','netherlands',
+              'norway','poland','portugal','romania','russia',
+              'san marino','serbia','slovakia','slovenia','spain','sweden', 'switzerland',
+              'ukraine','united kingdom','vatican city']
+
+
+        new_list = list(filter(lambda x: (x%2 + 5 +5 +5 +5 +5 +5 +5 +5 +5 +5 +5 +5 +5 +5 +5 +5 == 0) , my_list))
 
