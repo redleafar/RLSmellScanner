@@ -1,15 +1,16 @@
 package presenter;
 
-import implementations.largeclass.LargeClassScanner;
-import implementations.longelementchain.LongElementChainScanner;
-import implementations.longlambdafunction.LongLambdaFunctionScanner;
-import implementations.longmessagechain.LongMessageChainScanner;
-import implementations.longmethod.LongMethodScanner;
-import implementations.longparamlist.LongParamListScanner;
-import implementations.longscopechaining.LongScopeChainingScanner;
-import implementations.longternary.LongTernaryOperatorScanner;
+import scanner.implementations.codesmells.largeclass.ClassCodeLinesScanner;
+import scanner.implementations.longelementchain.LongElementChainScanner;
+import scanner.implementations.longlambdafunction.LongLambdaFunctionScanner;
+import scanner.implementations.longmessagechain.LongMessageChainScanner;
+import scanner.implementations.longmethod.LongMethodScanner;
+import scanner.implementations.longparamlist.LongParamListScanner;
+import scanner.implementations.longscopechaining.LongScopeChainingScanner;
+import scanner.implementations.longternary.LongTernaryOperatorScanner;
 import model.ScanResult;
 import scanner.MetricScanner;
+import scanner.implementations.single.MethodCodeLinesScanner;
 import view.ScanView;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,7 +26,7 @@ import java.util.stream.Stream;
 public class ScanPresenter {
     public static void main(String[] args) {
 
-        try (Stream<Path> walk = Files.walk(Paths.get("src/testfiles"))) {
+        try (Stream<Path> walk = Files.walk(Paths.get("/Users/mac/Desktop/Proyecto de grado/RepositoriesPython/Arnold-master"))) {
 
             List<String> result = walk.filter(Files::isRegularFile)
                     .map(Path::toString).collect(Collectors.toList());
@@ -44,7 +45,8 @@ public class ScanPresenter {
         ScanResult scanResult;
 
         LongMethodScanner longMethodScanner = new LongMethodScanner();
-        LargeClassScanner largeClassScanner = new LargeClassScanner();
+        ClassCodeLinesScanner classCodeLinesScanner = new ClassCodeLinesScanner();
+        MethodCodeLinesScanner methodCodeLinesScanner = new MethodCodeLinesScanner();
         LongParamListScanner longParamListScanner = new LongParamListScanner();
         LongMessageChainScanner longMessageChainScanner = new LongMessageChainScanner();
         LongScopeChainingScanner longScopeChainingScanner = new LongScopeChainingScanner();
@@ -53,7 +55,7 @@ public class ScanPresenter {
         LongLambdaFunctionScanner longLambdaFunctionScanner = new LongLambdaFunctionScanner();
 
         scannerArrayList.add(longMethodScanner);
-        scannerArrayList.add(largeClassScanner);
+        scannerArrayList.add(classCodeLinesScanner);
         scannerArrayList.add(longParamListScanner);
         scannerArrayList.add(longMessageChainScanner);
         scannerArrayList.add(longScopeChainingScanner);
