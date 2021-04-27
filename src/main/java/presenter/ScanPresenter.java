@@ -1,5 +1,7 @@
 package presenter;
 
+import model.ScanResult;
+import scanner.MetricScanner;
 import scanner.implementations.codesmells.largeclass.ClassCodeLinesScanner;
 import scanner.implementations.longelementchain.LongElementChainScanner;
 import scanner.implementations.longlambdafunction.LongLambdaFunctionScanner;
@@ -8,12 +10,9 @@ import scanner.implementations.longmethod.LongMethodScanner;
 import scanner.implementations.longparamlist.LongParamListScanner;
 import scanner.implementations.longscopechaining.LongScopeChainingScanner;
 import scanner.implementations.longternary.LongTernaryOperatorScanner;
-import model.ScanResult;
-import scanner.MetricScanner;
-import scanner.implementations.single.MethodCodeLinesScanner;
 import view.ScanView;
 import view.ScanViewExcelImpl;
-import view.ScanViewTerminalImpl;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,21 +29,10 @@ public class ScanPresenter {
     public static ScanView scanView = new ScanViewExcelImpl();
     public static ArrayList<MetricScanner> scannerArrayList = new ArrayList<>();
     public static void main(String[] args) {
-        try (Stream<Path> walk = Files.walk(Paths.get("/Users/mac/Desktop/Proyecto de grado/RepositoriesPython/"))) {
 
-            List<String> projects = walk.filter(Files::isDirectory)
-                    .map(Path::toString).collect(Collectors.toList());
+        String projectName = "/Users/mac/Desktop/Proyecto de grado/acme/examples/open_spiel";
 
-            projects.forEach(ScanPresenter::scanProject);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private static void scanProject(String projectFolder) {
-        try (Stream<Path> walk = Files.walk(Paths.get(projectFolder))) {
+        try (Stream<Path> walk = Files.walk(Paths.get(projectName))) {
 
             List<String> result = walk.filter(Files::isRegularFile)
                     .map(Path::toString).collect(Collectors.toList());
@@ -68,9 +56,9 @@ public class ScanPresenter {
             scannerArrayList.add(longLambdaFunctionScanner);
 
             List<String> pythonFiles = getPythonFiles(result);
-            scanView.setup(scannerArrayList, pythonFiles.size(), projectFolder);
+            scanView.setup(scannerArrayList, pythonFiles.size(), projectName);
             pythonFiles.forEach(ScanPresenter::scanFile);
-            scanView.saveReport(projectFolder);
+            scanView.saveReport(projectName);
 
         } catch (IOException e) {
             e.printStackTrace();

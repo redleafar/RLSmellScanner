@@ -10,7 +10,7 @@ import static utils.Constants.DELIMITER;
 public class ScanViewTerminalImpl implements ScanView {
 
     @Override
-    public void setup(ArrayList<MetricScanner> metricsList, int numberOfFiles, String projectFolder) {
+    public void setup(ArrayList<MetricScanner> metricsList, int numberOfFiles, String projectName) {
 
     }
 

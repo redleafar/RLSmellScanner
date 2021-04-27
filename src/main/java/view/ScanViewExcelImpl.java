@@ -1,6 +1,7 @@
 package view;
 
 import model.ScanResult;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,10 +24,12 @@ public class ScanViewExcelImpl implements ScanView {
     int numberOfSmellsToMeasure = 0;
     int numberOfFiles = 0;
     int[] totalArray;
+    String projectName = "";
 
     @Override
-    public void setup(ArrayList<MetricScanner> metricsList, int numberOfFiles, String projectFolder) {
-        String[] projectNameArray = projectFolder.split("/");
+    public void setup(ArrayList<MetricScanner> metricsList, int numberOfFiles, String projectName) {
+        this.projectName = projectName;
+        String[] projectNameArray = projectName.split("/");
         String shortProjectName = projectNameArray[projectNameArray.length - 1];
         sheet = workbook.createSheet(shortProjectName);
         sheet.setZoom(ZOOM_LEVEL);
@@ -36,7 +39,7 @@ public class ScanViewExcelImpl implements ScanView {
         headerCell.setCellValue("Code Smells");
         headerCell.setCellStyle(getHeaderStyle());
 
-        CellStyle style = workbook.createCellStyle();
+        CellStyle style = getRegularStyle();
 
         sheet.setColumnWidth(FIRST_COLUMN, 6000);
 
@@ -54,7 +57,7 @@ public class ScanViewExcelImpl implements ScanView {
 
         Row row = sheet.createRow(FIRST_ROW + 1 + numberOfSmellsToMeasure);
         Cell cell = row.createCell(FIRST_COLUMN);
-        cell.setCellValue("Total");
+        cell.setCellValue("Total (# de archivos:" + numberOfFiles + ")");
         cell.setCellStyle(style);
     }
 
@@ -64,13 +67,12 @@ public class ScanViewExcelImpl implements ScanView {
             rowNumber = FIRST_ROW;
             columnNumber++;
             currentFileName = fileName;
-            String[] fileNameArray = fileName.split("/");
-            String shortFileName = fileNameArray[fileNameArray.length - 1];
+            String shortFileName = fileName.replaceAll(projectName,"");
             createHeaderCell(shortFileName);
 
             rowNumber++;
             createRegularCell(scanResult.getDetections());
-            totalArray[rowNumber - FIRST_ROW] += scanResult.getDetections();
+            totalArray[rowNumber - FIRST_ROW - 1] += scanResult.getDetections();
             fileCodeSmellTotal += scanResult.getDetections();
         } else {
             createRegularCell(scanResult.getDetections());
@@ -95,7 +97,7 @@ public class ScanViewExcelImpl implements ScanView {
         String shortFileName = fileNameArray[fileNameArray.length - 1];
         File currDir = new File(".");
         String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + shortFileName + ".xlsx";
+        String fileLocation = path.substring(0, path.length() - 1) + "reports/" + shortFileName + ".xlsx";
 
         if (numberOfFiles > 0) {
             try {
@@ -117,23 +119,18 @@ public class ScanViewExcelImpl implements ScanView {
     }
 
     private void createRegularCell(int value) {
-        CellStyle style = workbook.createCellStyle();
-        style.setWrapText(true);
-
         Row row = sheet.getRow(rowNumber);
         Cell cell = row.createCell(columnNumber);
         cell.setCellValue(value);
-        cell.setCellStyle(style);
+        cell.setCellStyle(getRegularStyle());
     }
 
     private void addCodeSmellTotalRow() {
-        CellStyle style = workbook.createCellStyle();
-        style.setWrapText(true);
         Row row = sheet.getRow(rowNumber + 1);
         Cell cell = row.createCell(columnNumber);
         sheet.setColumnWidth(columnNumber, 6000);
         cell.setCellValue(fileCodeSmellTotal);
-        cell.setCellStyle(style);
+        cell.setCellStyle(getRegularStyle());
         fileCodeSmellTotal = 0;
     }
 
@@ -141,12 +138,10 @@ public class ScanViewExcelImpl implements ScanView {
         rowNumber = FIRST_ROW;
         columnNumber++;
         createHeaderCell("Total");
-
         int total = 0;
+        CellStyle style = getRegularStyle();
 
         for (int i=0;i < numberOfSmellsToMeasure;i++) {
-            CellStyle style = workbook.createCellStyle();
-            style.setWrapText(true);
             Row row = sheet.getRow(FIRST_ROW + i + 1);
             Cell cell = row.createCell(columnNumber);
             sheet.setColumnWidth(columnNumber, 6000);
@@ -155,8 +150,6 @@ public class ScanViewExcelImpl implements ScanView {
             total += totalArray[i];
         }
 
-        CellStyle style = workbook.createCellStyle();
-        style.setWrapText(true);
         Row row = sheet.getRow(FIRST_ROW + numberOfSmellsToMeasure + 1);
         Cell cell = row.createCell(columnNumber);
         sheet.setColumnWidth(columnNumber, 6000);
@@ -166,15 +159,29 @@ public class ScanViewExcelImpl implements ScanView {
 
     private CellStyle getHeaderStyle() {
         CellStyle headerStyle = workbook.createCellStyle();
-        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        headerStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
         XSSFFont font = workbook.createFont();
-        font.setFontName("Arial");
-        font.setFontHeightInPoints((short) 16);
         font.setBold(true);
         headerStyle.setFont(font);
 
         return headerStyle;
+    }
+
+    private CellStyle getRegularStyle() {
+        CellStyle style = workbook.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.LEMON_CHIFFON.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setWrapText(true);
+
+        return style;
     }
 }
